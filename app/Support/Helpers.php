@@ -87,14 +87,6 @@ if( ! function_exists('isCheck') )
 {
     function isCheck($id, $idSelected)
     {
-        if(!\is_string($id)){
-            throw new \Exception('First parameter not found');
-        }
-
-        if(!\is_string($idSelected)){
-            throw new \Exception('Second parameter not found');
-        }
-
         if($idSelected)
             if(in_array($id, $idSelected))
                 return 'checked';
