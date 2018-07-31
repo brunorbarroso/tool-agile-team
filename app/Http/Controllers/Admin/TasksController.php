@@ -27,14 +27,12 @@ class TasksController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->get('search');
-        $perPage = 25;
+        $maxPerPage = 25;
 
         if (!empty($keyword)) {
-            $tasks = Task::where('code', 'LIKE', "%$keyword%")
-                ->orWhere('title', 'LIKE', "%$keyword%")
-                ->latest()->paginate($perPage);
+            $tasks = $this->task->search(['title', 'LIKE', "'%$keyword%'"], $maxPerPage);
         } else {
-            $tasks = Task::latest()->paginate($perPage);
+            $tasks = $this->task->paginate($maxPerPage);
         }
 
         return view('admin.tasks.index', compact('tasks'));
@@ -63,9 +61,8 @@ class TasksController extends Controller
 			'code' => 'required',
 			'title' => 'required'
 		]);
-        $data = $request->all();
         
-        Task::create($data);
+        $this->task->create( $request->all() );
 
         return redirect('admin/tasks')->with('flash_message', 'Tarefa added!');
     }
@@ -79,7 +76,7 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        $task = Task::findOrFail($id);
+        $task = $this->task->find($id);
 
         return view('admin.tasks.show', compact('task'));
     }
@@ -93,7 +90,7 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::findOrFail($id);
+        $task = $this->task->find($id);
 
         return view('admin.tasks.edit', compact('task'));
     }
@@ -112,11 +109,10 @@ class TasksController extends Controller
 			'code' => 'required',
 			'title' => 'required'
 		]);
-        $data = $request->all();
         
-        $task = Task::findOrFail($id);
-        $task->update($data);
-
+        $task = $this->task->find($id);
+        $task->update($request->all());
+        
         return redirect('admin/tasks')->with('flash_message', 'Tarefa updated!');
     }
 
@@ -129,7 +125,7 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
-        Task::destroy($id);
+        $this->task->delete($id);
 
         return redirect('admin/tasks')->with('flash_message', 'Tarefa deleted!');
     }
