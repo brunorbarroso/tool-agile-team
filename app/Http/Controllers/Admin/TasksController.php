@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Contracts\TaskRepositoryInterface;
-use App\Task;
 
 class TasksController extends Controller
 {
