@@ -6,31 +6,19 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use App\Parameter;
-use App\Task;
+use App\Contracts\ParameterRepositoryInterface;
+use App\Contracts\TaskRepositoryInterface;
 
 class ClassificationController extends Controller
 {
 
-    protected $parameters;
-    protected $tasks;
+    protected $parameter;
+    protected $task;
 
-    public function getParameters(){
-        return $this->parameters;
-    }
-
-    public function setParameters(){
-        $parameters = Parameter::get();
-        $this->parameters = $parameters;
-    }
-
-    public function getTasks(){
-        return $this->tasks;
-    }
-
-    public function setTasks(){
-        $tasks = Task::orderBy('title', 'ASC')->pluck('title', 'id');
-        $this->tasks = $tasks;
+    public function __construct(ParameterRepositoryInterface $parameter, TaskRepositoryInterface $task)
+    {
+        $this->parameter = $parameter;
+        $this->task = $task;
     }
 
     /**
@@ -40,7 +28,9 @@ class ClassificationController extends Controller
      */
     public function index(Request $request)
     {
-        $tasks = Task::get();
+        // Capture all tasks
+        $tasks = $this->task->all();
+
         return view('admin.classifications.index', compact('tasks'));
     }
 
@@ -51,13 +41,13 @@ class ClassificationController extends Controller
      */
     public function create()
     {
-        $this->setParameters();
-        $this->setTasks();
-
-        $parameters = $this->getParameters();
-        $parameters = prepareParameters($parameters);
-        $tasks = $this->getTasks();
+        // Capture all parameters and tasks
+        $parameters = $this->parameter->all();
+        $tasks = $this->task->all()->pluck('title', 'id');
         $selected = false;
+
+        // Convert for format expected on page
+        $parameters = prepareParameters($parameters);
 
         return view('admin.classifications.create', compact('parameters','tasks', 'selected'));
     }
@@ -71,6 +61,7 @@ class ClassificationController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate request
         $this->validate($request, [
             'task_id' => 'required',
             'time_id' => 'required',
@@ -78,11 +69,18 @@ class ClassificationController extends Controller
             'priority_id' => 'required'
         ]);
         
-        $data = $request->all();
-        $task_id = $data['task_id'];
-        $parameter_id = [$data['time_id'], $data['knowledge_id'], $data['priority_id']];
+        // Capture task id
+        $task_id = $request->input('task_id');
 
-        $task = Task::find($task_id);
+        // Find task by id
+        $task = $this->task->find($task_id);
+        
+        // Prepare array with values and update values in task
+        $parameter_id = [
+            $request->input('time_id'),
+            $request->input('knowledge_id'),
+            $request->input('priority_id')
+        ];
 
         $task->parameters()->attach($parameter_id);
 
@@ -98,15 +96,13 @@ class ClassificationController extends Controller
      */
     public function show($id)
     {
-        $task = Task::findOrFail($id);
-        $this->setParameters();
-        $this->setTasks();
+        // Find task by id
+        $task = $this->task->find($id);
 
-        $parameters = $this->getParameters();
+        // Capture parameters and tasks in data base
+        $parameters = $this->parameter->all();
         $parameters = prepareParameters($parameters);
-        $tasks = $this->getTasks();
-
-        //return $task->parametros();
+        $tasks = $this->task->all()->pluck('title', 'id');
 
         return view('admin.classifications.show', compact('task', 'tasks', 'parameters'));
     }
@@ -121,16 +117,14 @@ class ClassificationController extends Controller
     public function edit($id)
     {
         // Find task by id
-        $task = Task::findOrFail($id);
-        $this->setParameters();
-        $this->setTasks();
+        $task = $this->task->find($id);
         
         // Capture parameters and tasks in data base
-        $parameters = $this->getParameters();
+        $parameters = $this->parameter->all();
         $parameters = prepareParameters($parameters);
-        $tasks = $this->getTasks();
+        $tasks = $this->task->all()->pluck('title', 'id');
 
-        // Get parameters selected in task
+        // Get parameters selected in task and convert to array
         $selected = $task->parameters()->get()->toArray();
         $selected = array_column($selected, 'id');
 
@@ -147,17 +141,24 @@ class ClassificationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Validate request
         $this->validate($request, [
             'time_id' => 'required',
             'knowledge_id' => 'required',
             'priority_id' => 'required'
-		]);
-        $data = $request->all();
-        $parameters_id = [$data['time_id'], $data['knowledge_id'], $data['priority_id']];
+        ]);    
+        
+        // Find task by id
+        $task = $this->task->find($id);
+        
+        // Prepare array with values and update values in task
+        $parameter_id = [
+            $request->input('time_id'),
+            $request->input('knowledge_id'),
+            $request->input('priority_id')
+        ];
 
-        $task = Task::find($id);
-
-        $task->parameters()->sync($parameters_id);
+        $task->parameters()->sync($parameter_id);
 
         return redirect('admin/classifications')->with('flash_message', "Classificação da tarefa {$id} atualizada!");
     }
@@ -171,7 +172,8 @@ class ClassificationController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::find($id);
+        // Find task by id and delete
+        $task = $this->task->find($id);
         $task->parameters()->sync([]);
 
         return redirect('admin/classifications')->with('flash_message', "Classificação da tarefa {$id} excluida!");
