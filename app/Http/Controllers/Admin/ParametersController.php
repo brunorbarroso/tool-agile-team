@@ -6,10 +6,18 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use App\Parameter;
+use App\Contracts\ParameterRepositoryInterface;
 
 class ParametersController extends Controller
 {
+
+    protected $parameter;
+    
+    public function __construct(ParameterRepositoryInterface $parameter)
+    {
+        $this->parameter = $parameter;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,14 +26,12 @@ class ParametersController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->get('search');
-        $perPage = 25;
+        $maxPerPage = 25;
 
         if (!empty($keyword)) {
-            $parameters = Parameter::where('name', 'LIKE', "%$keyword%")
-                ->orWhere('type', 'LIKE', "%$keyword%")
-                ->orderBy('weight', 'asc')->paginate($perPage);
+            $parameters = $this->parameter->search(['name', 'LIKE', "'%$keyword%'"], $maxPerPage);
         } else {
-            $parameters = Parameter::orderBy('type', 'asc')->orderBy('weight', 'asc')->paginate($perPage);
+            $parameters = $this->parameter->paginate($maxPerPage);
         }
 
         return view('admin.parameters.index', compact('parameters'));
@@ -55,9 +61,8 @@ class ParametersController extends Controller
 			'weight' => 'required',
 			'type' => 'required'
 		]);
-        $data = $request->all();
         
-        Parameter::create($data);
+        $this->parameter->create($request->all());
 
         return redirect('admin/parameters')->with('flash_message', 'Parametro added!');
     }
@@ -71,7 +76,7 @@ class ParametersController extends Controller
      */
     public function show($id)
     {
-        $parameter = Parameter::findOrFail($id);
+        $parameter = $this->parameter->find($id);
 
         return view('admin.parameters.show', compact('parameter'));
     }
@@ -85,7 +90,7 @@ class ParametersController extends Controller
      */
     public function edit($id)
     {
-        $parameter = Parameter::findOrFail($id);
+        $parameter = $this->parameter->find($id);
 
         return view('admin.parameters.edit', compact('parameter'));
     }
@@ -105,10 +110,9 @@ class ParametersController extends Controller
 			'weight' => 'required',
 			'type' => 'required'
 		]);
-        $data = $request->all();
         
-        $parameter = Parameter::findOrFail($id);
-        $parameter->update($data);
+        $parameter = $this->parameter->find($id);
+        $parameter->update($request->all());
 
         return redirect('admin/parameters')->with('flash_message', 'Parametro updated!');
     }
@@ -122,7 +126,7 @@ class ParametersController extends Controller
      */
     public function destroy($id)
     {
-        Parameter::destroy($id);
+        $this->parameter->delete($id);
 
         return redirect('admin/parameters')->with('flash_message', 'Parametro deleted!');
     }
