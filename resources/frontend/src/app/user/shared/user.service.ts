@@ -9,14 +9,16 @@ import { environment } from './../../../environments/environment';
 @Injectable()
 export class UserService {
 
-  readonly path_uri = 'user/register';
+  readonly path_uri = 'auth/register';
 
   constructor(private http: HttpClient) {}
 
   registerUser(user: User){
     const body: User = {
-      Email: user.Email,
-      Password: user.Password
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      password_confirmation: user.password_confirmation
     }
     return this.http.post(`${environment.api_url}/${this.path_uri}`, body);
   }
