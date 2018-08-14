@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 import { AppComponent } from './app.component';
@@ -26,7 +27,8 @@ import { UserService } from './user/shared/user.service';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    ToastrModule
+    ToastrModule.forRoot(),
+    BrowserAnimationsModule
   ],
   providers: [UserService],
   bootstrap: [AppComponent]

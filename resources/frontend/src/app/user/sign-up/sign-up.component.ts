@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../shared/user.model';
 import { NgForm } from '@angular/forms';
-import { UserService } from './../shared/user.service';
 import { ToastrService } from 'ngx-toastr';
+import { User } from '../shared/user.model';
+import { UserService } from '../shared/user.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -18,25 +18,37 @@ export class SignUpComponent implements OnInit {
 
   ngOnInit() {
     this.resetForm();
+    setTimeout(() => this.toastr.success('Welcome!'));
   }
 
   resetForm(form?: NgForm){
     if(form != null)
       form.reset();
     this.user = {
-      Email: '',
-      Password: ''
+      name: '',
+      email: '',
+      password: '',
+      password_confirmation: ''
     }
   }
 
-  onSubmit(form: NgForm){
+  OnSubmit(form: NgForm){
     this.userService.registerUser(form.value).
-      subscribe((data: any) => {
-        if(data.Successded == true){
+      subscribe((response: any) => {
+        if(response.success == true)
+        {
           this.resetForm();
-          this.toastr.success('User registration sucessful');
-        }else
-          this.toastr.error(data.Errors[0])
+          if(response.data.message !== null){
+            this.toastr.success(response.data.message);
+          }
+        } else {
+          var message = [];
+          $.each(response.errors, function(label, error) {
+            var str = label + ": " + error;
+            message.push(str);
+          });
+          this.toastr.error(message.join(' '))
+        }
       });
   }
 
