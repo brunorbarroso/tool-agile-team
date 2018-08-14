@@ -77,17 +77,15 @@ class AuthJWTController extends Controller
 
         if(count($errors))
         {
-            return response()->json(['errors' => $errors], 401);
+            return response()->json(['success'=>false, 'data'=>null, 'errors'=> $errors]);
         }
 
         $user = $this->createUser($credentials);
         
-        if (! $token = auth()->attempt($credentials))
-        {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-        
-        return $this->respondWithToken($token);
+        if( $user !== null )
+            return response()->json(['success'=>true, 'data'=>['message' => 'User register Successfully'], 'errors'=> null]);
+
+        return response()->json(['success'=>false, 'data'=>['message' => 'User not register'], 'errors'=> null]);
      }
 
     /**
