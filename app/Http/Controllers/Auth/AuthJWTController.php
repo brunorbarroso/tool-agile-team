@@ -55,8 +55,8 @@ class AuthJWTController extends Controller
      */
     public function login()
     {
-        $credentials = request(['email', 'password']);
-
+        $credentials = request()->only('email','password');
+        
         if (! $token = auth()->attempt($credentials))
         {
             return response()->json(['error' => 'Unauthorized'], 401);
