@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
@@ -9,7 +9,8 @@ import { environment } from './../../../environments/environment';
 @Injectable()
 export class UserService {
 
-  readonly path_uri = 'auth/register';
+  readonly uri_register = 'auth/register';
+  readonly uri_token = 'auth/login';
 
   constructor(private http: HttpClient) {}
 
@@ -20,7 +21,15 @@ export class UserService {
       password: user.password,
       password_confirmation: user.password_confirmation
     }
-    return this.http.post(`${environment.api_url}/${this.path_uri}`, body);
+    return this.http.post(`${environment.api_url}/${this.uri_register}`, body);
+  }
+
+  authenticationUser(email, password) {
+    const body = {
+      email: email,
+      password: password,
+    }
+    return this.http.post(`${environment.api_url}/${this.uri_token}`, body);
   }
 
 }
