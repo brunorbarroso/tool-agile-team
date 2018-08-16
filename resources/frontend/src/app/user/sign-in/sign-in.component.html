@@ -1,3 +1,22 @@
-<p>
-  sign-in works!
-</p>
+<div *ngIf="isLoginError" class="red-text center error-message">
+    <i class="material-icons">error</i> Incorrect username or password
+</div>
+<form #loginForm="ngForm" class="col s12 white" (ngSubmit)="OnSubmit(email.value,password.value)">
+    <div class="row">
+      <div class="input-field col s12">
+        <i class="material-icons prefix">account_circle</i>
+        <input type="text" #email ngModel name="email" placeholder="E-mail" required>
+      </div>
+    </div>
+    <div class="row">
+       <div class="input-field col s12">
+         <i class="material-icons prefix">vpn_key</i>
+         <input type="password" #password ngModel name="password" placeholder="Password" required>
+       </div>
+     </div>
+     <div class="row">
+         <div class="input-field col s12">
+           <button [disabled]="!loginForm.valid" class="btn-large btn-submit" type="submit">Login</button>
+         </div>
+       </div>
+ </form>
