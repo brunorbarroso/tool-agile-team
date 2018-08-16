@@ -18,7 +18,6 @@ export class SignUpComponent implements OnInit {
 
   ngOnInit() {
     this.resetForm();
-    setTimeout(() => this.toastr.success('Welcome!'));
   }
 
   resetForm(form?: NgForm){
@@ -43,11 +42,14 @@ export class SignUpComponent implements OnInit {
           }
         } else {
           var message = [];
-          $.each(response.errors, function(label, error) {
-            var str = label + ": " + error;
-            message.push(str);
-          });
-          this.toastr.error(message.join(' '))
+          var errors = response.errors;
+          for (var key in errors){
+              if (errors.hasOwnProperty(key)) {
+                var str = key + ": " + errors[key];
+                message.push(str);
+              }
+          }
+          this.toastr.error(message.join(' '))  
         }
       });
   }
