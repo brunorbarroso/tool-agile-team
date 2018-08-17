@@ -3,14 +3,11 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
-import { User } from './user.model';
 import { environment } from './../../../environments/environment';
+import { User } from './user.model';
 
 @Injectable()
 export class UserService {
-
-  readonly uri_register = 'auth/register';
-  readonly uri_token = 'auth/login';
 
   constructor(private http: HttpClient) {}
 
@@ -21,15 +18,24 @@ export class UserService {
       password: user.password,
       password_confirmation: user.password_confirmation
     }
-    return this.http.post(`${environment.api_url}/${this.uri_register}`, body);
+    return this.http.post(`${environment.api_url}/auth/register`, body);
   }
 
   authenticationUser(email, password) {
+    var reqHeader = new HttpHeaders({ 'No-Auth':'True' });
     const body = {
       email: email,
       password: password,
     }
-    return this.http.post(`${environment.api_url}/${this.uri_token}`, body);
+    return this.http.post(`${environment.api_url}/auth/login`, body, { headers: reqHeader });
+  }
+
+  getUserClaims(){
+    var reqHeader = new HttpHeaders({ 'No-Auth':'True' });
+    const body = {
+      token: localStorage.getItem('userToken')
+    }
+    return this.http.post(`${environment.api_url}/auth/me`, body, { headers: reqHeader });
   }
 
 }
