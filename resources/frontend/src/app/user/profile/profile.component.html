@@ -1,0 +1,14 @@
+<div class="row" *ngIf="user">
+    <div class="col s12 m7">
+      <div class="card">
+        <div class="card-content">
+          <span>Full Name: {{user.name}}</span>
+          <br>
+          <span>Email: {{user.email}}</span>
+          <br>
+          <br>
+          <span>Logged On: {{today | date:'h:mm a'}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
