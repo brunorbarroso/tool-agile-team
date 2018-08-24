@@ -10,5 +10,4 @@ interface ParameterRepositoryInterface
     public function delete($id);
     public function paginate($limit);
     public function search($attrs, $paginate);
-    public function whereOrLike(&$model, $attrs);
 }
