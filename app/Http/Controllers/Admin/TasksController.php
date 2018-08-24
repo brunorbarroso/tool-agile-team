@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Contracts\TaskRepositoryInterface;
+use App\Task;
 
 class TasksController extends Controller
 {
@@ -26,14 +27,12 @@ class TasksController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->get('search');
-        $maxPerPage = 25;
+        $search = getSearchableFields($this->task, $keyword, []);
 
         if (!empty($keyword)) {
-            $tasks = $this->task->search(
-                [['title'=>"%$keyword%"],
-                 ['code'=>"%$keyword%"]], $maxPerPage);
+            $tasks = $this->task->search($search, config('app.paginate.maxPerPage'));
         } else {
-            $tasks = $this->task->paginate($maxPerPage);
+            $tasks = $this->task->paginate(config('app.paginate.maxPerPage'));
         }
 
         return view('admin.tasks.index', compact('tasks'));

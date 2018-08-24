@@ -26,15 +26,12 @@ class ParametersController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->get('search');
-        $maxPerPage = 25;
-
+        $search = getSearchableFields($this->task, $keyword, []);
+        
         if (!empty($keyword)) {
-            $parameters = $this->parameter->search([
-                ['name'=>"%$keyword%"],
-                ['type'=>"%$keyword%"]
-            ], $maxPerPage);
+            $parameters = $this->parameter->search($search, config('app.paginate.maxPerPage'));
         } else {
-            $parameters = $this->parameter->paginate($maxPerPage);
+            $parameters = $this->parameter->paginate(config('app.paginate.maxPerPage'));
         }
 
         return view('admin.parameters.index', compact('parameters'));
