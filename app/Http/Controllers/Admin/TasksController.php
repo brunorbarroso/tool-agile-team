@@ -29,7 +29,9 @@ class TasksController extends Controller
         $maxPerPage = 25;
 
         if (!empty($keyword)) {
-            $tasks = $this->task->search(['title', 'LIKE', "'%$keyword%'"], $maxPerPage);
+            $tasks = $this->task->search(
+                [['title'=>"%$keyword%"],
+                 ['code'=>"%$keyword%"]], $maxPerPage);
         } else {
             $tasks = $this->task->paginate($maxPerPage);
         }

@@ -29,7 +29,10 @@ class ParametersController extends Controller
         $maxPerPage = 25;
 
         if (!empty($keyword)) {
-            $parameters = $this->parameter->search(['name', 'LIKE', "'%$keyword%'"], $maxPerPage);
+            $parameters = $this->parameter->search([
+                ['name'=>"%$keyword%"],
+                ['type'=>"%$keyword%"]
+            ], $maxPerPage);
         } else {
             $parameters = $this->parameter->paginate($maxPerPage);
         }
