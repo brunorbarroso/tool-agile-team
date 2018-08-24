@@ -127,3 +127,52 @@ if( ! function_exists('applyFormula') )
         return ( ($time + $knowledge) * $priority ) / 2;
     }
 }
+
+/*
+*
+* Function responsible by return fillable model with search
+*
+* @param App\Contracts\<name_model>RepositoryInterface $table
+* @param String $keyword
+* @param Array $except
+*
+* @return Array
+* @author Bruno Barroso
+*
+*/
+if( ! function_exists('getFieldsSearchable') )
+{
+    function getSearchableFields(&$table, $keyword, $except = [])
+    {
+        $tableName = $table->getTableName();
+        $columns = $table->getFillable();
+
+        if($tableName == TRUE)
+            $columnsWithoutReserved = array_diff($columns, $except);
+        
+        return setValueSearchableFields($columnsWithoutReserved, $keyword);
+    }
+}
+
+/*
+*
+* Function responsible by create array with fields and search
+*
+* @param Array $columns
+* @param String $keyword
+*
+* @return Array
+* @author Bruno Barroso
+*
+*/
+if( ! function_exists('setValueSearchableFields') )
+{
+    function setValueSearchableFields($columns, $keyword)
+    {
+        $searchScope = [];
+        foreach($columns as $column){
+            $searchScope[$column] = "%$keyword%";
+        }
+        return [$searchScope];
+    }
+}
