@@ -3,6 +3,14 @@
 class BaseRepository 
 {
 
+    public function getTableName(){
+        return $this->repository->getTable();
+    }
+
+    public function getFillable(){
+        return $this->repository->getFillable();
+    }
+
     public function all()
     {
         return $this->repository->all();
