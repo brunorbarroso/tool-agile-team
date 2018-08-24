@@ -7,9 +7,7 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ApiService {
-  constructor(
-    private http: HttpClient,
-  ) {}
+  constructor(private http: HttpClient) {}
 
   private formatErrors(error: any) {
     return  _throw(error.errors);
@@ -27,10 +25,10 @@ export class ApiService {
     ).pipe(catchError(this.formatErrors));
   }
 
-  post(path: string, body: Object = {}): Observable<any> {
+  post(path: string, body: Object = {}, params: Object = {}): Observable<any> {
     return this.http.post(
       `${environment.api_url}${path}`,
-      JSON.stringify(body)
+      JSON.stringify(body), params
     ).pipe(catchError(this.formatErrors));
   }
 

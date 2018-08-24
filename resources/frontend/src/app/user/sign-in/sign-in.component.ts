@@ -18,7 +18,7 @@ export class SignInComponent implements OnInit {
   }
 
   OnSubmit(email,password){
-    this.userService.authenticationUser(email, password)
+    this.userService.attemptAuth(email, password)
       .subscribe((data: any)=>{
         localStorage.setItem('userToken', data.access_token);
         this.router.navigate(['/dashboard']);

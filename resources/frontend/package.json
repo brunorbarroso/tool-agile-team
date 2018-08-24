@@ -24,6 +24,7 @@
     "@types/jquery": "^3.3.6",
     "ajv-keywords": "^3.2.0",
     "core-js": "^2.4.1",
+    "kickstarter-angular": "^0.2.0",
     "ngx-toastr": "^8.10.0",
     "rxjs": "^5.5.11",
     "zone.js": "^0.8.19"

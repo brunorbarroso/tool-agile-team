@@ -1,11 +1,12 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
-import { Routes } from '@angular/router';
 import { SignUpComponent } from './user/sign-up/sign-up.component';
 import { SignInComponent } from './user/sign-in/sign-in.component';
 import { UserComponent } from './user/user.component';
 import { HomeComponent } from './home/home.component';
 
-export const appRoutes: Routes = [
+export const routes: Routes = [
     {
         path: 'dashboard', component: HomeComponent, canActivate: [AuthGuard]
     },
@@ -21,3 +22,9 @@ export const appRoutes: Routes = [
         path: '', redirectTo:'account/login', pathMatch: 'full'
     }
 ];
+
+@NgModule({
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule]
+  })
+export class AppRoutingModule { }

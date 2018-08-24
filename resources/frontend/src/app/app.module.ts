@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from './../environments/environment';
@@ -17,8 +16,9 @@ import { SignUpComponent } from './user/sign-up/sign-up.component';
 import { ProfileComponent } from './user/profile/profile.component';
 
 // resources
-import { appRoutes } from './routes';
+import { AppRoutingModule } from './app-routing.module';
 import { UserService } from './user/shared/user.service';
+import { ApiService } from './core/services/api.services';
 import { AuthGuard } from './auth/auth.guard';
 
 @NgModule({
@@ -36,9 +36,9 @@ import { AuthGuard } from './auth/auth.guard';
     HttpClientModule,
     ToastrModule.forRoot(),
     BrowserAnimationsModule,
-    RouterModule.forRoot(appRoutes, { enableTracing: !environment.production })
+    AppRoutingModule
   ],
-  providers: [UserService, AuthGuard],
+  providers: [ApiService, UserService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
