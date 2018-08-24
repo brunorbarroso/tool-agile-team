@@ -21,8 +21,8 @@ Route::get('/home', function(){
     return view('admin.dashboard');
 });
 
-Route::group(['middleware' => 'auth'], function () {
-    Route::resource('admin/parameters', 'Admin\\ParametersController');
-    Route::resource('admin/tasks', 'Admin\\TasksController');
-    Route::resource('admin/classifications', 'Admin\\ClassificationController');
+Route::group(['prefix'=>'admin','middleware' => 'auth'], function () {
+    Route::resource('/parameters', 'Admin\\ParametersController');
+    Route::resource('/tasks', 'Admin\\TasksController');
+    Route::resource('/classifications', 'Admin\\ClassificationController');
 });
