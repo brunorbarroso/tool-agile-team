@@ -2,6 +2,7 @@
 
 use App\Parameter;
 use App\Contracts\ParameterRepositoryInterface;
+use App\Repositories\BaseRepository;
 
 class ParameterRepository extends BaseRepository implements ParameterRepositoryInterface
 {
