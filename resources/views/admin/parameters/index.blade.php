@@ -20,7 +20,7 @@
                             <div class="col-lg-3">
                                 <form method="GET" action="{{ url('/admin/parameters') }}" accept-charset="UTF-8" class="form-inline float-right" role="search">
                                     <div class="input-group">
-                                        <input type="text" name="search" class="form-control" placeholder="Pesquise por...">
+                                    <input type="text" name="search" class="form-control" placeholder="Pesquise por..." value="{{ app('request')->input('search') }}">
                                         <span class="input-group-btn">
                                             <button class="btn btn-secondary" type="submit">
                                                 <i class="fa fa-search"></i>
