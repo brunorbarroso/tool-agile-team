@@ -31,7 +31,7 @@ class Parameter extends Model
     /**
      * The classifications that belong to the shop.
      */
-     public function tasks(): BelongsToMany
+    public function tasks(): BelongsToMany
      {
          return $this->belongsToMany('App\Task');
      }
