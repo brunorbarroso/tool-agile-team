@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['prefix' => 'auth', 'middleware'=>['cors', 'api']], function($router){
+Route::group(['prefix' => 'auth', 'middleware'=>['api']], function($router){
     Route::post('login', 'Auth\\AuthJWTController@login');
     Route::post('logout', 'Auth\\AuthJWTController@logout');
     Route::post('refresh', 'Auth\\AuthJWTController@refresh');
