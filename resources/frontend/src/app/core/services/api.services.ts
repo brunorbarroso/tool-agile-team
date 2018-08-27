@@ -12,23 +12,23 @@ export class ApiService {
   private formatErrors(error: any) {
     return  _throw(error.errors);
   }
-
-  get(path: string, params: HttpParams = new HttpParams()): Observable<any> {
-    return this.http.get(`${environment.api_url}${path}`, { params })
+  
+  get(path: string, header: HttpHeaders): Observable<any> {
+    return this.http.get(`${environment.api_url}${path}`, { headers: header })
       .pipe(catchError(this.formatErrors));
   }
 
-  put(path: string, body: Object = {}): Observable<any> {
+  put(path: string, body: Object = {}, header: HttpHeaders): Observable<any> {
     return this.http.put(
       `${environment.api_url}${path}`,
-      JSON.stringify(body)
+      JSON.stringify(body), { headers: header }
     ).pipe(catchError(this.formatErrors));
   }
 
-  post(path: string, body: Object = {}, params: Object = {}): Observable<any> {
+  post(path: string, body: Object = {}, header: HttpHeaders): Observable<any> {
     return this.http.post(
       `${environment.api_url}${path}`,
-      JSON.stringify(body), params
+      JSON.stringify(body), { headers: header }
     ).pipe(catchError(this.formatErrors));
   }
 
