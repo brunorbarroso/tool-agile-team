@@ -13,32 +13,33 @@ export class UserService {
   constructor(private http: HttpClient, private apiService: ApiService) {}
 
   register(user: User){
+    var header = new HttpHeaders({});
     const body: User = {
       name: user.name,
       email: user.email,
       password: user.password,
       password_confirmation: user.password_confirmation
     }
-    return this.apiService.post(`/auth/register`, body);
+    return this.apiService.post(`/auth/register`, body, header);
   }
 
+
   attemptAuth(email, password) {
-    var reqHeader = new HttpHeaders({ 'No-Auth':'True' });
+    var header = new HttpHeaders({'Content-Type':'application/json'});
     const body = {
       email: email,
       password: password,
     }
-    return this.http.post(`${environment.api_url}/auth/login`, body, { headers: reqHeader});
-    return this.apiService.post(`/auth/login`, body);
+    return this.apiService.post(`/auth/login`, body, header);
   }
 
-  getUser(){
-    var reqHeader = new HttpHeaders({ 'No-Auth':'True' });
+  fetchUser(){
+    var header = new HttpHeaders({'Content-Type':'application/json'});
     const body = {
       token: localStorage.getItem('userToken')
     }
-    return this.http.post(`${environment.api_url}/auth/me`, body, { headers: reqHeader});
-    return this.apiService.post(`/auth/me`, body, reqHeader);
+    
+    return this.apiService.post(`/auth/me`, body, header);
   }
 
 }
