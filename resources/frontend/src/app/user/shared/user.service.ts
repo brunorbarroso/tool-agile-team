@@ -13,7 +13,7 @@ export class UserService {
   constructor(private http: HttpClient, private apiService: ApiService) {}
 
   register(user: User){
-    var header = new HttpHeaders({});
+    var header = new HttpHeaders({'Content-Type':'application/json'});
     const body: User = {
       name: user.name,
       email: user.email,
