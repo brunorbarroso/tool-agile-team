@@ -80,4 +80,8 @@ class BaseRepository
 
     }
 
+    public function orderBy($columns){
+        return $this->repository->orderBy($columns);
+    }
+
 }
