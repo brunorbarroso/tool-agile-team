@@ -26,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind('App\Contracts\TaskRepositoryInterface','App\Repositories\TaskRepository');
         $this->app->bind('App\Contracts\ParameterRepositoryInterface','App\Repositories\ParameterRepository');
+        $this->app->bind('App\Contracts\RoleRepositoryInterface','App\Repositories\RoleRepository');
     }
 }
