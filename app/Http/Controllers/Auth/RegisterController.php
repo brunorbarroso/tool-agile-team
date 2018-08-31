@@ -6,9 +6,13 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Contracts\RoleRepositoryInterface;
 
 class RegisterController extends Controller
 {
+
+    protected $role;
+    
     /*
     |--------------------------------------------------------------------------
     | Register Controller
@@ -34,9 +38,10 @@ class RegisterController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(RoleRepositoryInterface $role)
     {
         $this->middleware('guest');
+        $this->role = $role;
     }
 
     /**
@@ -51,6 +56,7 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'role' => 'required|exists:roles,id',
         ]);
     }
 
@@ -62,10 +68,20 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+
+        $user->roles()->attach($data['role']);
+
+        return $user;
+    }
+
+    public function showRegistrationForm()
+    {
+        $roles = $this->role->orderBy('name')->pluck('name', 'id');
+        return view('auth.register', compact('roles'));
     }
 }
