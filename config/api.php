@@ -58,7 +58,7 @@ return [
     |
     */
 
-    'prefix' => env('API_PREFIX', null),
+    'prefix' => env('API_PREFIX', 'api'),
 
     /*
     |--------------------------------------------------------------------------
@@ -169,7 +169,7 @@ return [
     */
 
     'auth' => [
-
+        'jwt' => 'Dingo\Api\Auth\Provider\JWT',
     ],
 
     /*
